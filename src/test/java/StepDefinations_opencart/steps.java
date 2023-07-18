@@ -54,9 +54,11 @@ public class steps
     }
 
     @After
-    public void tearDown(Scenario scenario) {
+    public void tearDown(Scenario scenario) 
+    {
         System.out.println("Scenario status ======>"+scenario.getStatus());
-        if(scenario.isFailed()) {
+        if(scenario.isFailed()) 
+        {
         	
         	TakesScreenshot ts=(TakesScreenshot) driver;
         	byte[] screenshot=ts.getScreenshotAs(OutputType.BYTES);
@@ -66,88 +68,13 @@ public class steps
        driver.quit();
     }
 
-    @Given("User Launch browser")
-    public void user_launch_browser() 
-    {
-        if(br.equals("chrome"))
-        {
-        	WebDriverManager.chromedriver().setup();
-           driver=new ChromeDriver();
-        }
-        else if (br.equals("firefox")) {
-        	WebDriverManager.firefoxdriver().setup();
-            driver = new FirefoxDriver();
-        }
-        else if (br.equals("edge")) {
-        	
-        	WebDriverManager.edgedriver().setup();
-            driver = new EdgeDriver();
-        }
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-    }
+    
 
-    @Given("opens URL {string}")
-    public void opens_url(String url)
-    {
-        driver.get(url);
-        driver.manage().window().maximize();
-    }
+   //*******   Data Driven test method using excel     **************
    
-
-    @When("User navigate to MyAccount menu")
-    public void user_navigate_to_my_account_menu() {
-    	hp=new HomePage(driver);
-    	hp.clickMyAccount();
-        logger.info("Clicked on My Account ");
-            
-    }
-
-    @When("click on Login")
-    public void click_on_login() {
-        hp.clickLogin();
-        logger.info("Clicked on Login ");
-    }
-
-    @When("User enters Email as {string} and Password as {string}")
-    public void user_enters_email_as_and_password_as(String email, String pwd) {
-    	lp=new LoginPage(driver);
-         
-    	lp.setEmail(email);
-        logger.info("Provided Email ");
-        lp.setPassword(pwd);
-        logger.info("Provided Password ");
-    }
-
-    @When("Click on Login button")
-    public void click_on_login_button() {
-        lp.clickLogin();
-        logger.info("Clicked on Login button");
-    }
-
-
-    @Then("User navigates to MyAccount Page")
-    public void user_navigates_to_my_account_page() {
-    	macc=new MyAccountPage(driver);
-		boolean targetpage=macc.isMyAccountPageExists();
-	
-        if(targetpage)
-        {
-            logger.info("Login Success ");
-            Assert.assertTrue(true);
-        }
-        else
-        {
-            logger.error("Login Failed ");
-            Assert.assertTrue(false);
-        }
-
-    }
-
-   //*******   Data Driven test method    **************
-   
-    	@Then("check User navigates to MyAccount Page by passing Email and Password with excel row {string}")
-        public void check_user_navigates_to_my_account_page_by_passing_email_and_password_with_excel_data(String rows)
-        {
+    @Then("check User navigates to home Page by passing Email and Password with excel row {string}")
+    public void check_user_navigates_to_home_page_by_passing_email_and_password_with_excel_row(String rows) 
+    {
     	
         datamap=DataReader.data(System.getProperty("user.dir")+"\\testData\\Opencart_LoginData.xlsx", "Sheet1");
 
@@ -157,24 +84,33 @@ public class steps
         String exp_res= datamap.get(index).get("res");
 
         lp=new LoginPage(driver);
+        lp.clickloginpage();
         lp.setEmail(email);
         lp.setPassword(pwd);
+        lp.clickLoginbtn();
 
-        lp.clickLogin();
+        
         try
         {
-            boolean targetpage=macc.isMyAccountPageExists();
+        	
+        	
+        	boolean targetpage = lp.Uservalidate();
+    		
+        	
+           // boolean targetpage=macc.isMyAccountPageExists();
 
             if(exp_res.equals("Valid"))
             {
                 if(targetpage==true)
                 {
-                    MyAccountPage myaccpage=new MyAccountPage(driver);
-                    myaccpage.clickLogout();
+                    //MyAccountPage myaccpage=new MyAccountPage(driver);
+                   // myaccpage.clickLogout();
                     Assert.assertTrue(true);
+                    logger.info("Login success ");
                 }
                 else
                 {
+                	logger.info("Login Failed ");
                     Assert.assertTrue(false);
                 }
             }
@@ -183,7 +119,7 @@ public class steps
             {
                 if(targetpage==true)
                 {
-                    macc.clickLogout();
+                  //  macc.clickLogout();
                     Assert.assertTrue(false);
                 }
                 else
@@ -204,6 +140,92 @@ public class steps
 
     //*******   Account Registration Methods    **************
 
-   
+	
+	@Given("User will Launch the browser")
+	public void user_will_launch_the_browser() 
+	{
+		if(br.equals("chrome"))
+        {
+        	WebDriverManager.chromedriver().setup();
+           driver=new ChromeDriver();
+        }
+        else if (br.equals("firefox"))
+        {
+        	WebDriverManager.firefoxdriver().setup();
+            driver = new FirefoxDriver();
+        }
+        else if (br.equals("edge")) 
+        {
+        	
+        	WebDriverManager.edgedriver().setup();
+            driver = new EdgeDriver();
+        }
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    
+	}
+	
+	@Given("opens the URL {string}")
+	public void opens_the_url(String url) 
+	{
+	  driver.get(url);
+	  logger.info(" Open URL ");
+	  driver.manage().window().maximize();
+	
+	}
+	
+	@Given("click to Login button")
+	public void click_to_login_button() 
+	{
+		lp=new LoginPage(driver);
+		lp.clickloginpage();
+		logger.info(" User clicks on login button ");
+	}
+	
+	@Given("User enters Email address as {string} and the Password as {string}")
+	public void user_enters_email_address_as_and_the_password_as(String string, String string2)
+	{
+	    lp.setEmail(string);
+	    lp.setPassword(string2);
+	    logger.info("User enters Email address and the Password");
+	}
+	
+	@Given("Click on the Login button")
+	public void click_on_the_login_button() 
+	{
+	    lp.clickLoginbtn();
+	    logger.info("User clicks on login button");
+	}
+	
+	@Then("User navigates to home Page")
+	public void user_navigates_to_home_page()
+	{
+	   
+		boolean targetpage = lp.Uservalidate();
+		
+		if(targetpage)
+		{
+			
+		    Assert.assertTrue(true);
+			logger.info("Login success ");
+	    }
+		else
+		{
+			logger.info("Login Failed ");
+			Assert.assertTrue(false);
+			
+		}
+	
+	}
+		
+		//Data driver using example 
+	
+	@Given("he will  enters Email address as {string}  and the Password as  {string}")
+	public void he_will_enters_email_address_as_and_the_password_as(String email, String password)
+	{
+		lp.setEmail(email);
+	    lp.setPassword(password);
 
+    }
+	
 }
+

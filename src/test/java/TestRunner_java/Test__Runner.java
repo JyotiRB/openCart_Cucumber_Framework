@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
         //features= {".//Features/LoginDDTExcel.feature"},
         //features= {".//Features/Login.feature",".//Features/AccountRegistration.feature"},//run specific features 
        // features="@target/rerun.txt",   // Runs only failures
-        features= {".//Features//LoginDDtExcel.feature"},
+        features= {".//Features/LoginDDtExcel.feature"},
         glue="StepDefinations_opencart",
         plugin= {
         		"pretty", "html:reports/myreport.html", 

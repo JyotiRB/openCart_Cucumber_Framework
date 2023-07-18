@@ -10,7 +10,7 @@ public class HomePage extends BasePage {
 	{
 		super(driver);
 	}
-
+ 
 	// Elements
 	@FindBy(xpath = "//span[text()='My Account']")
 	WebElement lnkMyaccount;
